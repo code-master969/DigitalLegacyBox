@@ -1,0 +1,145 @@
+.success-page {
+  padding: 3rem 0;
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+}
+
+.success-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 3rem;
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.success-icon {
+  font-size: 5rem;
+  color: #28a745;
+  margin-bottom: 1.5rem;
+}
+
+.error-icon {
+  font-size: 5rem;
+  color: #dc3545;
+  margin-bottom: 1.5rem;
+}
+
+.success-page h1 {
+  color: #333;
+  margin-bottom: 2rem;
+}
+
+.capsule-details {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  text-align: left;
+}
+
+.capsule-details h3 {
+  margin-bottom: 1rem;
+  color: #4a6fa5;
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 0.5rem;
+}
+
+.detail-item {
+  display: flex;
+  margin-bottom: 0.8rem;
+}
+
+.detail-label {
+  font-weight: bold;
+  width: 100px;
+  color: #6c757d;
+}
+
+.detail-value {
+  flex: 1;
+}
+
+.capsule-id {
+  margin: 2rem 0;
+  padding: 1rem;
+  background-color: #e9f5ff;
+  border-radius: 8px;
+}
+
+.capsule-id p {
+  margin-bottom: 0.5rem;
+}
+
+.capsule-id .small {
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.next-steps {
+  margin: 2rem 0;
+  text-align: left;
+}
+
+.next-steps h3 {
+  color: #4a6fa5;
+  margin-bottom: 1rem;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.btn-outline {
+  background-color: transparent;
+  border: 2px solid #4a6fa5;
+  color: #4a6fa5;
+}
+
+.btn-outline:hover {
+  background-color: #4a6fa5;
+  color: white;
+}
+
+/* 加载状态样式 */
+.loading {
+  text-align: center;
+}
+
+.spinner {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(74, 111, 165, 0.3);
+  border-radius: 50%;
+  border-top-color: #4a6fa5;
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .success-card {
+    padding: 2rem 1.5rem;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .action-buttons .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}

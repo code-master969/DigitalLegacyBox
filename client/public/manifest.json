@@ -1,0 +1,9 @@
+{
+  "short_name": "时间胶囊",
+  "name": "时间胶囊 - 跨越时间的记忆",
+  "icons": [],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#4a6fa5",
+  "background_color": "#ffffff"
+}

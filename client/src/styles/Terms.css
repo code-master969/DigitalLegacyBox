@@ -1,0 +1,143 @@
+.terms-page {
+  padding: 3rem 0;
+  color: #333;
+}
+
+.terms-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.terms-header h1 {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.last-updated {
+  color: #7f8c8d;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.terms-content {
+  max-width: 900px;
+  margin: 0 auto;
+  line-height: 1.7;
+}
+
+.terms-section {
+  margin-bottom: 2.5rem;
+}
+
+.terms-section h2 {
+  color: #2c3e50;
+  font-size: 1.5rem;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.terms-section p {
+  margin-bottom: 1rem;
+}
+
+.terms-section ul {
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.terms-section li {
+  margin-bottom: 0.5rem;
+}
+
+.contact-info {
+  background-color: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 5px;
+  margin-top: 1rem;
+}
+
+.contact-info p {
+  margin-bottom: 0.5rem;
+}
+
+.terms-agreement {
+  background-color: #f8f9fa;
+  padding: 1.5rem;
+  border-radius: 5px;
+  margin: 2rem 0;
+  border-left: 4px solid #4a6fa5;
+}
+
+.terms-agreement p {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.terms-footer {
+  text-align: center;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.terms-footer a {
+  color: #4a6fa5;
+  text-decoration: none;
+  margin-left: 1rem;
+  transition: color 0.3s ease;
+}
+
+.terms-footer a:hover {
+  color: #3a5a80;
+  text-decoration: underline;
+}
+
+/* 打印样式 */
+@media print {
+  .terms-page {
+    padding: 0;
+  }
+  
+  .terms-header {
+    margin-bottom: 2rem;
+  }
+  
+  .terms-section {
+    page-break-inside: avoid;
+  }
+  
+  .terms-footer {
+    margin-top: 2rem;
+  }
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .terms-header h1 {
+    font-size: 2rem;
+  }
+  
+  .terms-section h2 {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .terms-page {
+    padding: 2rem 0;
+  }
+  
+  .terms-header {
+    margin-bottom: 2rem;
+  }
+  
+  .terms-section {
+    margin-bottom: 2rem;
+  }
+}
