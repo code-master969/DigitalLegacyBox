@@ -81,46 +81,46 @@ const SuccessPage = () => {
           <div className="capsule-details">
             <h3>胶囊详情</h3>
             
-            <div className="detail-item">
-              <span className="detail-label">发送给:</span>
-              <span className="detail-value">{capsule.recipientName}</span>
-            </div>
-            
-            <div className="detail-item">
-              <span className="detail-label">主题:</span>
-              <span className="detail-value">{capsule.subject}</span>
-            </div>
-            
-            <div className="detail-item">
-              <span className="detail-label">投递日期:</span>
-              <span className="detail-value">{formatDate(capsule.deliveryDate)}</span>
-            </div>
+          <div className="detail-item">
+            <span className="detail-label">发送给:</span>
+            <span className="detail-value">{capsule.recipientName}</span>
           </div>
           
-          <div className="capsule-id">
-            <p>您的胶囊ID: <strong>{capsule.id}</strong></p>
-            <p className="small">请保存此ID，以便将来查询您的胶囊状态</p>
+          <div className="detail-item">
+            <span className="detail-label">主题:</span>
+            <span className="detail-value">{capsule.subject}</span>
           </div>
           
-          <div className="next-steps">
-            <h3>下一步</h3>
-            <p>
-              您的时间胶囊已经安全保存。在指定的投递日期，我们将自动将您的消息发送给接收者。
-              您无需做任何事情，只需等待投递日期的到来。
-            </p>
+          <div className="detail-item">
+            <span className="detail-label">投递日期:</span>
+            <span className="detail-value">{formatDate(capsule.deliveryDate)}</span>
           </div>
-          
-          <div className="action-buttons">
-            <Link to="/" className="btn">
-              返回首页
-            </Link>
-            <Link to="/create" className="btn btn-outline">
-              创建另一个胶囊
-            </Link>
-          </div>
+        </div>
+        
+        <div className="capsule-id">
+          <p>您的胶囊ID: <strong>{capsule.id}</strong></p>
+          <p className="small">请保存此ID，以便将来查询您的胶囊状态</p>
+        </div>
+        
+        <div className="next-steps">
+          <h3>下一步</h3>
+          <p>
+            您的时间胶囊已经安全保存。在指定的投递日期，我们将自动将您的消息发送给接收者。
+            您无需做任何事情，只需等待投递日期的到来。
+          </p>
+        </div>
+        
+        <div className="action-buttons">
+          <Link to="/" className="btn">
+            返回首页
+          </Link>
+          <Link to="/create" className="btn btn-outline">
+            创建另一个胶囊
+          </Link>
         </div>
       </div>
     </div>
+  </div>
   );
 };
 

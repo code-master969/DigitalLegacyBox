@@ -17,11 +17,18 @@ export const AuthProvider = ({ children }) => {
         
         if (token) {
           // 设置axios默认headers
-          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          axios.defaults.headers.common['x-auth-token'] = token;
           
-          // 验证token
-          const res = await axios.get('/api/auth/verify');
-          setCurrentUser(res.data);
+          // 从localStorage恢复用户数据
+          const userData = localStorage.getItem('userData');
+          if (userData) {
+            setCurrentUser(JSON.parse(userData));
+          }
+          
+          // 仍然验证token有效性
+          const res = await axios.get('/api/auth/me');
+          setCurrentUser(res.data.user);
+          localStorage.setItem('userData', JSON.stringify(res.data.user));
         }
       } catch (err) {
         // 如果token无效，清除localStorage
@@ -42,11 +49,12 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       const res = await axios.post('/api/auth/login', { email, password });
       
-      // 保存token到localStorage
+      // 保存token和用户数据到localStorage
       localStorage.setItem('authToken', res.data.token);
+      localStorage.setItem('userData', JSON.stringify(res.data.user));
       
       // 设置axios默认headers
-      axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
+      axios.defaults.headers.common['x-auth-token'] = res.data.token;
       
       // 设置当前用户
       setCurrentUser(res.data.user);
@@ -64,11 +72,12 @@ export const AuthProvider = ({ children }) => {
       setError(null);
       const res = await axios.post('/api/auth/register', { email, password, code });
       
-      // 保存token到localStorage
+      // 保存token和用户数据到localStorage
       localStorage.setItem('authToken', res.data.token);
+      localStorage.setItem('userData', JSON.stringify(res.data.user));
       
       // 设置axios默认headers
-      axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
+      axios.defaults.headers.common['x-auth-token'] = res.data.token;
       
       // 设置当前用户
       setCurrentUser(res.data.user);

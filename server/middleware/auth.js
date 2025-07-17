@@ -7,7 +7,7 @@ const authMiddleware = (req, res, next) => {
   
   // 检查是否有令牌
   if (!token) {
-    return res.status(401).json({ message: '无访问权限，未提供令牌' });
+    return res.status(401).json({ message: 'l，未提供令牌' });
   }
   
   try {

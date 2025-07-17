@@ -57,7 +57,25 @@ api.interceptors.response.use(
 export const capsuleService = {
   // 创建新的时间胶囊
   createCapsule: async (capsuleData) => {
-    return await api.post('/capsules', capsuleData);
+    // 转换字段名以匹配后端API
+    const transformedData = {
+      title: capsuleData.subject,
+      content: capsuleData.message,
+      openDate: capsuleData.deliveryDate,
+      senderName: capsuleData.senderName,
+      senderEmail: capsuleData.senderEmail,
+      recipientName: capsuleData.recipientName,
+      recipientEmail: capsuleData.recipientEmail
+    };
+    
+    // 使用临时配置覆盖默认的x-auth-token头
+    const config = {
+      headers: {
+        'x-auth-token': localStorage.getItem('authToken')
+      }
+    };
+    
+    return await api.post('/capsules', transformedData, config);
   },
   
   // 根据 ID 获取胶囊详情
