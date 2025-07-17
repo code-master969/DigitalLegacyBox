@@ -67,7 +67,12 @@ const CreateCapsule = () => {
       setLoading(false);
       
       // 导航到成功页面，并传递胶囊ID
-      navigate('/success', { state: { capsuleId: response.id } });
+      // 确保response包含id字段，有些API可能使用_id或其他字段名
+      const capsuleId = response.id || response._id || response.data?.id;
+      if (!capsuleId) {
+        throw new Error('API响应中未找到胶囊ID');
+      }
+      navigate('/success', { state: { capsuleId } });
     } catch (err) {
       setLoading(false);
       setError('创建时间胶囊失败，请稍后再试');

@@ -12,13 +12,17 @@ const SuccessPage = () => {
   useEffect(() => {
     const fetchCapsuleDetails = async () => {
       // 从location state获取胶囊ID
+      console.log('Location state:', location.state);
       const capsuleId = location.state?.capsuleId;
       
       if (!capsuleId) {
-        setError('无法找到胶囊信息');
+        console.error('未从location state获取到胶囊ID');
+        setError('无法找到胶囊信息，请确保从创建页面正常跳转');
         setLoading(false);
         return;
       }
+      
+      console.log('获取胶囊详情，ID:', capsuleId);
       
       try {
         const data = await capsuleService.getCapsuleById(capsuleId);
