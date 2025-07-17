@@ -97,22 +97,81 @@ const verifyToken = (token) => {
   }
 };
 
+// 发送注册验证码邮件
+const sendRegistrationCode = async (email) => {
+  try {
+    // 生成验证码
+    const verificationCode = generateVerificationCode();
+    
+    // 保存验证码到用户记录
+    let user = await User.findOne({ email });
+    
+    if (user && user.isVerified) {
+      return { success: false, message: '该邮箱已被注册' };
+    }
+    
+    if (!user) {
+      // 如果用户不存在，创建新临时用户
+      user = new User({ 
+        email,
+        isVerified: false // 标记为未验证
+      });
+    }
+    
+    // 添加新验证码
+    user.verificationCodes.push({ code: verificationCode });
+    await user.save();
+    
+    // 发送验证码邮件
+    const subject = '时间胶囊 - 注册验证码';
+    const text = `您的注册验证码是: ${verificationCode}，10分钟内有效。`;
+    const html = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #4a4a4a;">时间胶囊 - 注册验证码</h2>
+        <p>您好，</p>
+        <p>您的注册验证码是: <strong style="font-size: 18px; color: #007bff;">${verificationCode}</strong></p>
+        <p>此验证码将在10分钟内有效。</p>
+        <p>如果您没有请求此验证码，请忽略此邮件。</p>
+        <p>谢谢！</p>
+        <p>- 时间胶囊团队</p>
+      </div>
+    `;
+    
+    await mailer.sendMail(email, subject, text, html);
+    return { success: true };
+  } catch (error) {
+    console.error('发送注册验证码失败:', error);
+    throw error;
+  }
+};
+
 // 注册新用户（使用邮箱和密码）
-const registerUser = async (email, password, name) => {
+const registerUser = async (email, password, name, code) => {
   try {
     // 检查用户是否已存在
     let user = await User.findOne({ email });
     
-    if (user) {
+    if (!user) {
+      return { success: false, message: '请先获取验证码' };
+    }
+    
+    if (user.isVerified) {
       return { success: false, message: '该邮箱已被注册' };
     }
     
-    // 创建新用户
-    user = new User({
-      email,
-      password,
-      name: name || email.split('@')[0] // 如果没有提供名称，使用邮箱前缀作为默认名称
-    });
+    // 验证验证码
+    const validCode = user.verificationCodes.find(vc => vc.code === code);
+    
+    if (!validCode) {
+      return { success: false, message: '验证码无效' };
+    }
+    
+    // 验证成功，清除所有验证码
+    user.verificationCodes = [];
+    user.password = password;
+    user.name = name || email.split('@')[0]; // 如果没有提供名称，使用邮箱前缀作为默认名称
+    user.isVerified = true; // 标记为已验证
+    user.lastLogin = Date.now();
     
     await user.save();
     
@@ -162,5 +221,6 @@ module.exports = {
   generateToken,
   verifyToken,
   registerUser,
-  verifyPassword
+  verifyPassword,
+  sendRegistrationCode
 };

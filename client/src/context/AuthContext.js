@@ -59,10 +59,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   // 注册函数
-  const register = async (email, password) => {
+  const register = async (email, password, code) => {
     try {
       setError(null);
-      const res = await axios.post('/api/auth/register', { email, password });
+      const res = await axios.post('/api/auth/register', { email, password, code });
       
       // 保存token到localStorage
       localStorage.setItem('authToken', res.data.token);

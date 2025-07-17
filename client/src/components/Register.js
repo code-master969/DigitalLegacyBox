@@ -1,23 +1,60 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
+import axios from 'axios';
 import '../styles/Login.css'; // 复用Login的样式
 
 const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [verificationCode, setVerificationCode] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isSendingCode, setIsSendingCode] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [countdown, setCountdown] = useState(0);
+  const [successMessage, setSuccessMessage] = useState('');
   
   const navigate = useNavigate();
   const { register } = useContext(AuthContext);
+
+  // 处理倒计时
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown]);
+
+  // 发送验证码
+  const handleSendCode = async () => {
+    // 验证邮箱格式
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      setErrorMessage('请输入有效的电子邮箱');
+      return;
+    }
+
+    try {
+      setIsSendingCode(true);
+      setErrorMessage('');
+      
+      const response = await axios.post('/api/auth/send-registration-code', { email });
+      
+      setSuccessMessage('验证码已发送到您的邮箱');
+      setCountdown(60); // 60秒倒计时
+    } catch (err) {
+      setErrorMessage(err.response?.data?.message || '发送验证码失败，请稍后再试');
+    } finally {
+      setIsSendingCode(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
     // 表单验证
-    if (!email || !password || !confirmPassword) {
+    if (!email || !password || !confirmPassword || !verificationCode) {
       setErrorMessage('请填写所有必填字段');
       return;
     }
@@ -35,9 +72,10 @@ const Register = () => {
     try {
       setIsLoading(true);
       setErrorMessage('');
+      setSuccessMessage('');
       
-      // 调用注册函数
-      await register(email, password);
+      // 调用注册函数，包含验证码
+      await register(email, password, verificationCode);
       
       // 注册成功，重定向到首页
       navigate('/');
@@ -59,6 +97,12 @@ const Register = () => {
           </div>
         )}
         
+        {successMessage && (
+          <div className="success-message" style={{ color: 'green', marginBottom: '15px' }}>
+            {successMessage}
+          </div>
+        )}
+        
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="email">电子邮箱</label>
@@ -70,6 +114,33 @@ const Register = () => {
               placeholder="请输入您的电子邮箱"
               required
             />
+          </div>
+          
+          <div className="form-group verification-code-group">
+            <label htmlFor="verificationCode">验证码</label>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <input
+                type="text"
+                id="verificationCode"
+                value={verificationCode}
+                onChange={(e) => setVerificationCode(e.target.value)}
+                placeholder="请输入验证码"
+                required
+                style={{ flex: 1 }}
+              />
+              <button
+                type="button"
+                onClick={handleSendCode}
+                disabled={countdown > 0 || isSendingCode}
+                style={{
+                  minWidth: '120px',
+                  backgroundColor: countdown > 0 ? '#cccccc' : '#4a90e2',
+                  cursor: countdown > 0 ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {isSendingCode ? '发送中...' : countdown > 0 ? `重新发送(${countdown}s)` : '获取验证码'}
+              </button>
+            </div>
           </div>
           
           <div className="form-group">

@@ -91,7 +91,28 @@ const deliverCapsule = async (capsule) => {
   }
 };
 
+// 发送通用邮件
+const sendMail = async (to, subject, text, html) => {
+  const mailOptions = {
+    from: `"时间胶囊" <${process.env.EMAIL_USER}>`,
+    to,
+    subject,
+    text,
+    html
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log(`邮件已发送至 ${to}`);
+    return true;
+  } catch (error) {
+    console.error('发送邮件失败:', error);
+    throw error;
+  }
+};
+
 module.exports = {
   sendConfirmationEmail,
-  deliverCapsule
+  deliverCapsule,
+  sendMail
 };

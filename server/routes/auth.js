@@ -5,7 +5,8 @@ const {
   verifyCode, 
   generateToken, 
   registerUser, 
-  verifyPassword 
+  verifyPassword,
+  sendRegistrationCode
 } = require('../utils/authUtils');
 const User = require('../models/User');
 const authMiddleware = require('../middleware/auth');
@@ -117,13 +118,45 @@ router.put('/update-profile', authMiddleware, async (req, res) => {
   }
 });
 
-// 注册新用户（邮箱+密码）
+// 发送注册验证码
+router.post('/send-registration-code', async (req, res) => {
+  try {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({ message: '邮箱地址是必需的' });
+    }
+    
+    // 验证邮箱格式
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: '邮箱格式无效' });
+    }
+    
+    const result = await sendRegistrationCode(email);
+    
+    if (!result.success) {
+      return res.status(400).json({ message: result.message });
+    }
+    
+    res.status(200).json({ message: '验证码已发送到您的邮箱' });
+  } catch (error) {
+    console.error('发送注册验证码失败:', error);
+    res.status(500).json({ message: '发送验证码失败，请稍后再试' });
+  }
+});
+
+// 注册新用户（邮箱+密码+验证码）
 router.post('/register', async (req, res) => {
   try {
-    const { email, password, name } = req.body;
+    const { email, password, name, code } = req.body;
     
     if (!email || !password) {
       return res.status(400).json({ message: '邮箱和密码都是必需的' });
+    }
+    
+    if (!code) {
+      return res.status(400).json({ message: '验证码是必需的' });
     }
     
     // 验证邮箱格式
@@ -137,7 +170,7 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ message: '密码长度至少为6个字符' });
     }
     
-    const result = await registerUser(email, password, name);
+    const result = await registerUser(email, password, name, code);
     
     if (!result.success) {
       return res.status(400).json({ message: result.message });
