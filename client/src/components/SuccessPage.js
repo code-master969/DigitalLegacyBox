@@ -11,10 +11,21 @@ const SuccessPage = () => {
   
   useEffect(() => {
     const fetchCapsuleDetails = async () => {
-      // 从location state获取胶囊ID
       console.log('Location state:', location.state);
-      const capsuleId = location.state?.capsuleId;
       
+      // 优先使用导航传递的表单数据作为临时显示
+      if (location.state?.formData) {
+        console.log('使用导航传递的表单数据');
+        setCapsule({
+          ...location.state.formData,
+          id: location.state.capsuleId
+        });
+        setLoading(false);
+        return;
+      }
+
+      // 如果没有表单数据，则从API获取
+      const capsuleId = location.state?.capsuleId;
       if (!capsuleId) {
         console.error('未从location state获取到胶囊ID');
         setError('无法找到胶囊信息，请确保从创建页面正常跳转');
@@ -22,7 +33,7 @@ const SuccessPage = () => {
         return;
       }
       
-      console.log('获取胶囊详情，ID:', capsuleId);
+      console.log('从API获取胶囊详情，ID:', capsuleId);
       
       try {
         const data = await capsuleService.getCapsuleById(capsuleId);
@@ -40,8 +51,17 @@ const SuccessPage = () => {
   
   // 格式化日期显示
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('zh-CN', options);
+    if (!dateString) return '未设置';
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return '无效日期';
+      
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return date.toLocaleDateString('zh-CN', options);
+    } catch (error) {
+      console.error('日期格式化错误:', error);
+      return '日期格式错误';
+    }
   };
   
   if (loading) {
@@ -87,22 +107,28 @@ const SuccessPage = () => {
             
           <div className="detail-item">
             <span className="detail-label">发送给:</span>
-            <span className="detail-value">{capsule.recipientName}</span>
+            <span className="detail-value">
+              {capsule?.recipientName || '未设置接收者'}
+            </span>
           </div>
           
           <div className="detail-item">
             <span className="detail-label">主题:</span>
-            <span className="detail-value">{capsule.subject}</span>
+            <span className="detail-value">
+              {capsule?.subject || '无主题'}
+            </span>
           </div>
           
           <div className="detail-item">
             <span className="detail-label">投递日期:</span>
-            <span className="detail-value">{formatDate(capsule.deliveryDate)}</span>
+            <span className="detail-value">
+              {formatDate(capsule?.deliveryDate)}
+            </span>
           </div>
         </div>
         
         <div className="capsule-id">
-          <p>您的胶囊ID: <strong>{capsule.id}</strong></p>
+          <p>您的胶囊ID: <strong>{capsule?.id || '未知ID'}</strong></p>
           <p className="small">请保存此ID，以便将来查询您的胶囊状态</p>
         </div>
         
